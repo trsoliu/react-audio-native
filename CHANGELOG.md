@@ -5,6 +5,8 @@ intent and generated package changelogs are managed by Changesets under `.change
 
 ## Unreleased
 
+- Published `react-audio-native@1.0.0-beta.2` through OIDC Trusted Publishing with provenance and
+  verified clean Vite, Nuxt, React and Next registry consumers against the exact core beta.2.
 - Updated the React package to consume the exact public `@trsoliu/audio-core@1.0.0-beta.2`
   prerelease before publishing the matching React beta.
 - Added a mutually exclusive OIDC release path that waits until Changesets records every retained
