@@ -5,6 +5,8 @@ intent and generated package changelogs are managed by Changesets under `.change
 
 ## Unreleased
 
+- Updated the React package to consume the exact public `@trsoliu/audio-core@1.0.0-beta.2`
+  prerelease before publishing the matching React beta.
 - Added a mutually exclusive OIDC release path that waits until Changesets records every retained
   beta changeset for a publishable package as consumed, binds publication to an ancestor-verified
   versioning push, supports an exact-SHA-bound default-branch recovery after a failed release run,

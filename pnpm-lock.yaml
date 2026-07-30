@@ -284,8 +284,8 @@ importers:
   packages/react-audio-native:
     dependencies:
       '@trsoliu/audio-core':
-        specifier: 1.0.0-beta.1
-        version: 1.0.0-beta.1
+        specifier: 1.0.0-beta.2
+        version: 1.0.0-beta.2
       lucide-react:
         specifier: 1.27.0
         version: 1.27.0(react@18.3.1)
@@ -3095,8 +3095,8 @@ packages:
     peerDependencies:
       '@testing-library/dom': '>=7.21.4'
 
-  '@trsoliu/audio-core@1.0.0-beta.1':
-    resolution: {integrity: sha512-M4SyZBeI5WNHB7nKTo3izeOTdK23hkU57bI9EgXXvAamH91OWwRzi992ky8bOox+CIzB8PnH4caj5TGQPT9Fxw==, tarball: https://registry.npmjs.org/@trsoliu/audio-core/-/audio-core-1.0.0-beta.1.tgz}
+  '@trsoliu/audio-core@1.0.0-beta.2':
+    resolution: {integrity: sha512-gAkSpsaa43PCnyD4MBYWJcDF9b4qhRz6oaZId7J5abGxXjvDk4dZXa19evXEngF7K7My+u1/wmTGRqeGdSVHLQ==}
     engines: {node: '>=18'}
 
   '@ts-morph/common@0.27.0':
@@ -9256,7 +9256,7 @@ snapshots:
     dependencies:
       '@testing-library/dom': 10.4.1
 
-  '@trsoliu/audio-core@1.0.0-beta.1': {}
+  '@trsoliu/audio-core@1.0.0-beta.2': {}
 
   '@ts-morph/common@0.27.0':
     dependencies:

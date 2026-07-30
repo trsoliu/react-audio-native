@@ -1,7 +1,8 @@
 # Release policy
 
 1. Run `pnpm security:audit`, lint, typecheck, coverage, build, package and browser gates.
-2. Publish `@trsoliu/audio-core@1.0.0-beta.1` before the matching React prerelease.
+2. Publish the exact `@trsoliu/audio-core` prerelease before the matching React prerelease; the
+   current React beta candidate consumes public `@trsoliu/audio-core@1.0.0-beta.2`.
 3. Install the registry tarballs in clean Vite and Next consumers; workspace links are not evidence.
 4. Publish React prereleases from Changesets `beta` pre mode with `--tag next` while any required
    device smoke row is pending.
@@ -42,8 +43,8 @@ cannot publish. Before invoking npm, the publisher also verifies that the packag
 `@trsoliu/audio-core` version is already present in the public registry.
 
 The initial pre-state records `react-audio-v1` as consumed because it is already represented by
-the public beta. `clear-react-api-docs`, committed after that publication, remains the only pending
-input to the next version PR.
+the public beta. `clear-react-api-docs` and `react-core-beta-two`, committed after that publication,
+are the pending inputs to the next version PR.
 
 No workflow may rename the package when npm ownership is missing. It must stop and report the
 authorization blocker.
