@@ -5,6 +5,13 @@ intent and generated package changelogs are managed by Changesets under `.change
 
 ## Unreleased
 
+- Added a mutually exclusive OIDC release path that waits until Changesets records every retained
+  beta changeset for a publishable package as consumed, binds publication to an ancestor-verified
+  versioning push, supports an exact-SHA-bound default-branch recovery after a failed release run,
+  reconfirms the live remote branch immediately before publication,
+  tolerates multi-commit rebase merges, and verifies exact `next` tags before
+  treating registry versions as complete while retrying transient registry failures; stable
+  publication still requires all four device-smoke rows.
 - Expanded the React API and npm references with every public prop, callback payload, snapshot
   state, error code, command, Hook lifecycle rule, composition point and Bridge event; corrected
   the Vue-to-React mapping for `hint` and plain ReactNode control content.
