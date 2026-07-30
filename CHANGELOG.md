@@ -5,6 +5,9 @@ intent and generated package changelogs are managed by Changesets under `.change
 
 ## Unreleased
 
+- Expanded the React API and npm references with every public prop, callback payload, snapshot
+  state, error code, command, Hook lifecycle rule, composition point and Bridge event; corrected
+  the Vue-to-React mapping for `hint` and plain ReactNode control content.
 - Fixed WebView Bridge teardown so removing an adapter happens before a simultaneous source switch.
 - Pinned package publication to the official npm registry so local mirror settings cannot redirect a release.
 - Added a manual, main-only beta bootstrap with immutable Actions, complete release gates,

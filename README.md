@@ -19,6 +19,21 @@ fixtures/next               Next SSR consumer build
 docs                        Silen documentation, project map and AI knowledge base
 ```
 
+## Public API
+
+- Complete component props, callback payloads, snapshot states, errors, imperative commands,
+  Headless Hook behavior, and Bridge Events are documented in
+  [`docs/api`](docs/api/index.mdx).
+- The README shown with the npm package comes from
+  [`packages/react-audio-native/README.md`](packages/react-audio-native/README.md).
+- Low-level controller values such as `createAudioController()` come from
+  [`@trsoliu/audio-core`](https://www.npmjs.com/package/@trsoliu/audio-core), not from the React
+  adapter.
+
+React callbacks describe `AudioSnapshot` transitions rather than forwarding native `<audio>`
+events one-for-one. In particular, `onReady` is not a metadata callback and `onPlay` can run again
+when playback recovers from buffering.
+
 ## Development
 
 Node.js 22.22.2 or newer and pnpm 11.17.0 are required.
