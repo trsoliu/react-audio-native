@@ -8,21 +8,25 @@ import { afterEach, describe, expect, it } from 'vitest'
 
 import {
   detectPrereleaseVersionCommit,
+  detectStableVersionCommit,
   inspectReleaseState,
   isPrereleaseVersionCommit,
+  isStableVersionCommit,
 } from './release-state'
 
 const temporaryDirectories: string[] = []
 const workspaceRoot = resolve(import.meta.dirname, '..')
 const execFileAsync = promisify(execFile)
 
-async function createFixture(options: {
-  changesetBody?: string
-  changesetId?: string
-  consumedChangesets?: string[]
-  mode?: 'exit' | 'pre'
-  withPrereleaseState?: boolean
-} = {}): Promise<string> {
+async function createFixture(
+  options: {
+    changesetBody?: string
+    changesetId?: string
+    consumedChangesets?: string[]
+    mode?: 'exit' | 'pre'
+    withPrereleaseState?: boolean
+  } = {},
+): Promise<string> {
   const repositoryRoot = await mkdtemp(join(tmpdir(), 'audio-release-state-'))
   temporaryDirectories.push(repositoryRoot)
   await mkdir(join(repositoryRoot, '.changeset'), { recursive: true })
@@ -171,15 +175,224 @@ describe('Changesets release state', () => {
     ).toBe(false)
   })
 
+  it('accepts only an allowlisted stable version commit with a removed package changeset', () => {
+    const manifestPaths = ['packages/react-audio-native/package.json']
+    const releaseFiles = [
+      '.changeset/pre.json',
+      '.changeset/react-audio-v1.md',
+      'packages/react-audio-native/package.json',
+      'packages/react-audio-native/CHANGELOG.md',
+      'packages/react-audio-native/README.md',
+      'pnpm-lock.yaml',
+    ]
+    const releaseInput = {
+      beforeIsAncestorOfHead: true,
+      changedFiles: releaseFiles,
+      currentPrereleaseState: null,
+      currentVersions: ['1.0.0'],
+      deletedFiles: ['.changeset/pre.json', '.changeset/react-audio-v1.md'],
+      eventName: 'push',
+      manifestPaths,
+      previousPrereleaseState: {
+        changesets: ['react-audio-v1'],
+        mode: 'exit',
+        tag: 'beta',
+      },
+      previousVersions: ['1.0.0-beta.2'],
+      removedPackageChangeset: true,
+    } as const
+
+    expect(isStableVersionCommit(releaseInput)).toBe(true)
+    expect(
+      isStableVersionCommit({
+        ...releaseInput,
+        changedFiles: [
+          ...releaseFiles,
+          'packages/react-audio-native/src/index.ts',
+        ],
+      }),
+    ).toBe(false)
+    expect(
+      isStableVersionCommit({
+        ...releaseInput,
+        removedPackageChangeset: false,
+      }),
+    ).toBe(false)
+    expect(
+      isStableVersionCommit({
+        ...releaseInput,
+        deletedFiles: ['.changeset/pre.json'],
+      }),
+    ).toBe(false)
+    expect(
+      isStableVersionCommit({
+        ...releaseInput,
+        currentVersions: ['1.0.0-beta.3'],
+      }),
+    ).toBe(false)
+    expect(
+      isStableVersionCommit({
+        ...releaseInput,
+        currentVersions: ['0.9.0'],
+      }),
+    ).toBe(false)
+  })
+
+  it('accepts later stable patch release commits without prerelease state', () => {
+    expect(
+      isStableVersionCommit({
+        beforeIsAncestorOfHead: true,
+        changedFiles: [
+          '.changeset/fix-player.md',
+          'packages/react-audio-native/package.json',
+          'packages/react-audio-native/CHANGELOG.md',
+          'packages/react-audio-native/README.md',
+          'pnpm-lock.yaml',
+        ],
+        currentPrereleaseState: null,
+        currentVersions: ['1.0.1'],
+        deletedFiles: ['.changeset/fix-player.md'],
+        eventName: 'workflow_dispatch',
+        manifestPaths: ['packages/react-audio-native/package.json'],
+        previousPrereleaseState: null,
+        previousVersions: ['1.0.0'],
+        removedPackageChangeset: true,
+      }),
+    ).toBe(true)
+  })
+
+  it('accepts a combined pre-to-exit stable version commit', () => {
+    expect(
+      isStableVersionCommit({
+        beforeIsAncestorOfHead: true,
+        changedFiles: [
+          '.changeset/pre.json',
+          '.changeset/stable-change.md',
+          'packages/react-audio-native/package.json',
+          'packages/react-audio-native/CHANGELOG.md',
+          'packages/react-audio-native/README.md',
+        ],
+        currentPrereleaseState: {
+          changesets: ['stable-change'],
+          mode: 'exit',
+          tag: 'beta',
+        },
+        currentVersions: ['1.0.0'],
+        deletedFiles: ['.changeset/stable-change.md'],
+        eventName: 'push',
+        manifestPaths: ['packages/react-audio-native/package.json'],
+        previousPrereleaseState: {
+          changesets: ['stable-change'],
+          mode: 'pre',
+          tag: 'beta',
+        },
+        previousVersions: ['1.0.0-beta.2'],
+        removedPackageChangeset: true,
+      }),
+    ).toBe(true)
+  })
+
+  it('detects a stable version-only push at the live default-branch head', async () => {
+    const repositoryRoot = await createFixture({
+      changesetId: 'stable-change',
+      consumedChangesets: ['stable-change'],
+      mode: 'exit',
+    })
+    const manifestPath = 'packages/react-audio-native/package.json'
+    const packageDirectory = join(repositoryRoot, 'packages/react-audio-native')
+    await mkdir(packageDirectory, { recursive: true })
+    await writeFile(
+      join(repositoryRoot, manifestPath),
+      JSON.stringify({ name: 'react-audio-native', version: '1.0.0-beta.2' }),
+    )
+    await writeFile(join(packageDirectory, 'CHANGELOG.md'), '# Changelog\n')
+    await writeFile(
+      join(packageDirectory, 'README.md'),
+      'pnpm add react-audio-native@next\n',
+    )
+
+    await execFileAsync('git', ['init', '-b', 'main'], { cwd: repositoryRoot })
+    await execFileAsync(
+      'git',
+      ['config', 'user.email', 'release@example.com'],
+      {
+        cwd: repositoryRoot,
+      },
+    )
+    await execFileAsync('git', ['config', 'user.name', 'Release Test'], {
+      cwd: repositoryRoot,
+    })
+    await execFileAsync('git', ['add', '.'], { cwd: repositoryRoot })
+    await execFileAsync('git', ['commit', '-m', 'stable release source'], {
+      cwd: repositoryRoot,
+    })
+    const { stdout: beforeShaOutput } = await execFileAsync(
+      'git',
+      ['rev-parse', 'HEAD'],
+      { cwd: repositoryRoot, encoding: 'utf8' },
+    )
+
+    await rm(join(repositoryRoot, '.changeset/pre.json'))
+    await rm(join(repositoryRoot, '.changeset/stable-change.md'))
+    await writeFile(
+      join(repositoryRoot, manifestPath),
+      JSON.stringify({ name: 'react-audio-native', version: '1.0.0' }),
+    )
+    await writeFile(
+      join(packageDirectory, 'CHANGELOG.md'),
+      '# Changelog\n\n## 1.0.0\n',
+    )
+    await writeFile(
+      join(packageDirectory, 'README.md'),
+      'pnpm add react-audio-native@1.0.0\n',
+    )
+    await execFileAsync('git', ['add', '--all'], { cwd: repositoryRoot })
+    await execFileAsync('git', ['commit', '-m', 'version stable package'], {
+      cwd: repositoryRoot,
+    })
+    const { stdout: releaseHeadShaOutput } = await execFileAsync(
+      'git',
+      ['rev-parse', 'HEAD'],
+      { cwd: repositoryRoot, encoding: 'utf8' },
+    )
+    const remoteRoot = await mkdtemp(join(tmpdir(), 'audio-stable-remote-'))
+    temporaryDirectories.push(remoteRoot)
+    await execFileAsync(
+      'git',
+      ['init', '--bare', '--initial-branch=main', remoteRoot],
+      { cwd: repositoryRoot },
+    )
+    await execFileAsync('git', ['remote', 'add', 'origin', remoteRoot], {
+      cwd: repositoryRoot,
+    })
+    await execFileAsync('git', ['push', '--set-upstream', 'origin', 'main'], {
+      cwd: repositoryRoot,
+    })
+
+    await expect(
+      detectStableVersionCommit(repositoryRoot, [manifestPath], {
+        beforeSha: beforeShaOutput.trim(),
+        defaultBranch: 'main',
+        eventName: 'push',
+        headSha: releaseHeadShaOutput.trim(),
+      }),
+    ).resolves.toBe(true)
+    await expect(
+      detectStableVersionCommit(repositoryRoot, [manifestPath], {
+        beforeSha: beforeShaOutput.trim(),
+        defaultBranch: 'main',
+        eventName: 'push',
+        headSha: beforeShaOutput.trim(),
+      }),
+    ).resolves.toBe(false)
+  })
+
   it('accepts a version-only rebase sequence when the previous tip remains an ancestor', async () => {
     const repositoryRoot = await createFixture({
       changesetId: 'next-change',
       consumedChangesets: ['bootstrap'],
     })
-    const packageDirectory = join(
-      repositoryRoot,
-      'packages/react-audio-native',
-    )
+    const packageDirectory = join(repositoryRoot, 'packages/react-audio-native')
     await mkdir(packageDirectory, { recursive: true })
     await writeFile(
       join(packageDirectory, 'package.json'),
@@ -188,9 +401,13 @@ describe('Changesets release state', () => {
     await writeFile(join(packageDirectory, 'CHANGELOG.md'), '# Changelog\n')
 
     await execFileAsync('git', ['init', '-b', 'main'], { cwd: repositoryRoot })
-    await execFileAsync('git', ['config', 'user.email', 'release@example.com'], {
-      cwd: repositoryRoot,
-    })
+    await execFileAsync(
+      'git',
+      ['config', 'user.email', 'release@example.com'],
+      {
+        cwd: repositoryRoot,
+      },
+    )
     await execFileAsync('git', ['config', 'user.name', 'Release Test'], {
       cwd: repositoryRoot,
     })
@@ -329,7 +546,9 @@ describe('Changesets release state', () => {
   })
 
   it('requires a version PR while a non-empty prerelease changeset is pending', async () => {
-    const repositoryRoot = await createFixture({ changesetId: 'pending-change' })
+    const repositoryRoot = await createFixture({
+      changesetId: 'pending-change',
+    })
 
     await expect(inspectReleaseState(repositoryRoot)).resolves.toEqual({
       mode: 'beta',

@@ -57,10 +57,14 @@ export default defineConfig({
         text: '维护与发布',
         items: [
           { text: '发布知识库', link: '/release/' },
-          { text: '真机冒烟记录', link: '/device-smoke/' },
+          { text: '兼容性评估与真机记录', link: '/device-smoke/' },
           { text: 'AI 协作说明', link: '/wiki/ai-collaboration/' },
           { text: '架构决策', link: '/adr/0001-react-audio-adapter/' },
           { text: '首发发布决策', link: '/adr/0002-bootstrap-npm-publishing/' },
+          {
+            text: '稳定发布评估决策',
+            link: '/adr/0003-maintainer-assessed-stable-release/',
+          },
         ],
       },
     ],

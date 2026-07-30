@@ -21,5 +21,6 @@ Session, native HLS MIME support, Pointer Events and touch input independently. 
 `AudioPlayerBridge` reports state, track and error events without assuming a particular native host
 protocol.
 
-Stable 1.0 publication requires dated smoke evidence from iOS WKWebView, Android WebView and
-HarmonyOS ArkWeb. If any environment is unavailable, only a prerelease may be published.
+Stable publication requires either dated smoke evidence from every required WebView environment or
+a version-bound maintainer assessment that records successful automated evaluation and explicitly
+accepts the remaining host-specific risk. See the [compatibility decision](./device-smoke/).

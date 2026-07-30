@@ -58,7 +58,7 @@ Start the polished shadcn/ui Demo with `pnpm --filter demo-react dev`. Start the
 device probe with `pnpm --filter react-audio-compatibility-lab dev`.
 
 Architecture decisions live in [`docs/adr`](docs/adr), the runtime baseline is documented in
-[`docs/compatibility.md`](docs/compatibility.md), and the stable-release device gate is tracked in
+[`docs/compatibility.md`](docs/compatibility.md), and the stable-release evidence gate is tracked in
 [`docs/device-smoke.md`](docs/device-smoke.md). Start the documentation site with
 `pnpm docs:dev --host 127.0.0.1 --port 5176`; after merge to `main`, GitHub Pages publishes it at
 <https://trsoliu.github.io/react-audio-native/>.

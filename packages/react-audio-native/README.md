@@ -10,12 +10,16 @@ exclusive groups, and a protocol-neutral WebView Bridge.
 
 ## Install
 
+<!-- release-install:start -->
+
 ```bash
 pnpm add react-audio-native@next
 ```
 
 The 1.0 line is currently a prerelease. Import the standalone package CSS; consumers do not need
 Tailwind:
+
+<!-- release-install:end -->
 
 ```tsx
 import { AudioPlayer } from 'react-audio-native'

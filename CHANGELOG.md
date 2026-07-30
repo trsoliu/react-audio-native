@@ -5,6 +5,14 @@ intent and generated package changelogs are managed by Changesets under `.change
 
 ## Unreleased
 
+- Accepted the maintainer's version-bound automated compatibility assessment for stable 1.0.0,
+  while preserving unexecuted WebView rows as explicit residual risk instead of false evidence.
+- Replaced the device-only stable gate with an auditable dual-path gate: complete device evidence or
+  an exact-version maintainer decision with automated assessment and risk acceptance.
+- Restricted stable publication to an allowlisted Changesets version commit, verified against the
+  live default-branch head again immediately before OIDC publication.
+- Updated the React package to consume the published stable `@trsoliu/audio-core@1.0.0` before the
+  matching React stable release.
 - Published `react-audio-native@1.0.0-beta.2` through OIDC Trusted Publishing with provenance and
   verified clean Vite, Nuxt, React and Next registry consumers against the exact core beta.2.
 - Updated the React package to consume the exact public `@trsoliu/audio-core@1.0.0-beta.2`
@@ -15,7 +23,7 @@ intent and generated package changelogs are managed by Changesets under `.change
   reconfirms the live remote branch immediately before publication,
   tolerates multi-commit rebase merges, and verifies exact `next` tags before
   treating registry versions as complete while retrying transient registry failures; stable
-  publication still requires all four device-smoke rows.
+  publication still requires the documented stable evidence gate.
 - Expanded the React API and npm references with every public prop, callback payload, snapshot
   state, error code, command, Hook lifecycle rule, composition point and Bridge event; corrected
   the Vue-to-React mapping for `hint` and plain ReactNode control content.
@@ -25,7 +33,7 @@ intent and generated package changelogs are managed by Changesets under `.change
   provenance, exact registry checks and bounded propagation retries.
 - Documented npm's required `latest` alias for a new package with no stable release; `next` remains
   the authoritative prerelease channel.
-- Added a machine-enforced stable-release device gate and preserved the generated Silen Agent
+- Added a machine-enforced stable-release evidence gate and preserved the generated Silen Agent
   Contract inside the GitHub Pages artifact.
 - Retired the short-lived token bootstrap workflow after beta publication and clean
   registry-consumer verification; permanent releases use OIDC only.
@@ -51,8 +59,8 @@ intent and generated package changelogs are managed by Changesets under `.change
 
 - `react-audio-native@1.0.0-beta.1` is published with signed provenance and available through
   the documented `next` prerelease channel.
-- Stable `1.0.0` remains blocked until iOS WKWebView, Android WebView and HarmonyOS ArkWeb smoke
-  evidence is complete.
+- Stable `1.0.0` is authorized by the recorded maintainer assessment and remains subject to the
+  complete automated, registry-consumer and OIDC publication gates.
 
 ### Security
 

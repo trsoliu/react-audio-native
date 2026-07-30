@@ -45,8 +45,8 @@
       "expected": { "route": "/wiki/browser-webview/" }
     },
     {
-      "id": "stable-device-gate",
-      "query": "React 稳定 1.0 发布前需要哪些 iOS Android 鸿蒙真机证据",
+      "id": "stable-evidence-gate",
+      "query": "React 稳定 1.0 没有真机测试时如何记录自动化评估和剩余风险",
       "lang": "zh-CN",
       "expected": { "route": "/device-smoke/" }
     },

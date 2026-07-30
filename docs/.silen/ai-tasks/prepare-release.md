@@ -25,15 +25,18 @@ registry.
 2. Remove local core overrides and install from the public registry.
 3. Read release and device-smoke pages, then run every code, docs, package and browser gate.
 4. Build clean Vite and Next consumers from registry artifacts.
-5. Record versions, CI URLs, registry queries and device evidence.
+5. Record versions, CI URLs, registry queries and the selected stable evidence basis.
 
 ## Verification
 
 1. Run the complete repository quality, package, docs and browser gates.
 2. Query the public registry and install the exact core and adapter artifacts in clean consumers.
-3. For a stable release, verify every required device-smoke row contains dated real-device evidence.
+3. For a stable release, verify either complete dated device evidence or an exact-version maintainer
+   assessment with successful automated evaluation and explicit remaining-risk acceptance.
+4. Confirm the stable push is an allowlisted Changesets version transition and recheck the live
+   default-branch head immediately before publication.
 
 ## Stop conditions
 
 Stop on missing core publication, npm authority, failed gate, prerelease core under a stable React
-version or pending stable device evidence.
+version, or incomplete stable evidence and assessment records.

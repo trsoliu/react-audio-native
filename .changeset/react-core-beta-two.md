@@ -2,5 +2,5 @@
 'react-audio-native': patch
 ---
 
-Consume the exact public `@trsoliu/audio-core@1.0.0-beta.2` prerelease so the React adapter ships
-with the same patched finite-number state handling as the Vue adapter.
+Align the React adapter with the exact published `@trsoliu/audio-core` 1.0 line so it ships the same
+finite-number state handling and stable shared contract as the Vue adapter.
