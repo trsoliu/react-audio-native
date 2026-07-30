@@ -1,0 +1,14 @@
+{
+  "mode": "pre",
+  "tag": "beta",
+  "initialVersions": {
+    "react-audio-compatibility-lab": "0.0.0",
+    "demo-react": "0.0.0",
+    "fixture-next": "0.0.0",
+    "fixture-vite-react": "0.0.0",
+    "react-audio-native": "1.0.0-beta.1"
+  },
+  "changesets": [
+    "react-audio-v1"
+  ]
+}

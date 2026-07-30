@@ -33,6 +33,34 @@ After the clean Vite, Nuxt, React and Next registry consumers passed and Vue `le
 the temporary workflow and GitHub Environment secret were removed. Immutable Actions runs and Git
 history retain the bootstrap audit trail.
 
+Routine follow-up betas use Changesets `beta` pre mode in the trusted `release.yml`. Because
+Changesets retains source changeset files during pre mode, the workflow publishes only after every
+non-empty changeset that targets the publishable package is recorded in `pre.json` as consumed by
+the merged beta version PR; private Demo and fixture changesets do not block package publication.
+It also confirms that the triggering push both added a consumed changeset and changed the
+publishable manifest version. The event's previous default-branch SHA must remain an ancestor of
+the pushed `HEAD`, and the complete tree diff is limited to prerelease state, the publishable
+manifest, generated package changelog and lockfile. This supports multi-commit rebase merges
+without allowing unrelated source changes. It then verifies the manifest remains `*-beta.N`.
+Changesets rejects a custom publish tag during active pre mode, so a typed, idempotent publisher
+checks the exact registry version, verifies `next` through bounded fresh/no-cache reads that
+tolerate transient registry failures before skipping, and invokes
+`npm publish --tag next --provenance` only when that version does not exist. The job is restricted
+to `main`, and React publication requires its exact core dependency to exist on npm. Outside active
+pre mode, the mutually exclusive stable branch still requires the device-smoke gate before
+publication.
+
+If the original release run cannot be rerun, a manual dispatch on `main` requires the previous
+default-branch SHA and exact release HEAD SHA from the failed push. The checked-out `HEAD` must
+still equal that supplied release SHA, and live `origin/main` must resolve to the same commit,
+before the version-only diff and state transition are accepted. Both push and manual paths repeat
+the live remote comparison immediately before npm publication, preserving the source-change and
+default-branch boundary even when another push races a running job.
+
+When pre mode was adopted, `react-audio-v1` was seeded as consumed because its contents were
+already represented by the public beta manifest. The later `clear-react-api-docs` changeset
+remains pending and is the sole input to the next version PR.
+
 ## Consequences
 
 - The first package record can be created without committing or exposing credentials locally.
@@ -41,6 +69,8 @@ history retain the bootstrap audit trail.
   while keeping the credential disconnected from repository publishing.
 - Bare `npm install react-audio-native` can resolve the beta until stable exists; documentation must
   identify it as a prerelease and recommend `react-audio-native@next` during validation.
+- The workflow cannot use prerelease state to bypass stable publication: pre mode is restricted to
+  `next`, while non-pre mode is restricted by the device gate.
 
 ## Follow-up actions
 
