@@ -9,6 +9,8 @@
     "react-audio-native": "1.0.0-beta.1"
   },
   "changesets": [
-    "react-audio-v1"
+    "clear-react-api-docs",
+    "react-audio-v1",
+    "react-core-beta-two"
   ]
 }

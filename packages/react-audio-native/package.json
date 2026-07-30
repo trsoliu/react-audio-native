@@ -1,6 +1,6 @@
 {
   "name": "react-audio-native",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "description": "Accessible React audio player for modern browsers and WebViews.",
   "type": "module",
   "license": "MIT",
