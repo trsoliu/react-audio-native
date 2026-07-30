@@ -1,6 +1,6 @@
 # ADR 0002: Bootstrap the first npm beta with a protected short-lived token
 
-- Status: accepted
+- Status: accepted; bootstrap completed
 - Date: 2026-07-30
 - Decider: trsoliu
 - Owner: trsoliu
@@ -27,6 +27,10 @@ After beta verification, configure npm Trusted Publishing for `release.yml`, del
 Environment secret and revoke the bootstrap token. The bootstrap workflow is never used for a
 stable release.
 
+After the clean Vite, Nuxt, React and Next registry consumers passed and Vue `legacy` was finalized,
+the temporary workflow and GitHub Environment secret were removed. Immutable Actions runs and Git
+history retain the bootstrap audit trail.
+
 ## Consequences
 
 - The first package record can be created without committing or exposing credentials locally.
@@ -35,6 +39,14 @@ stable release.
   and Vue `legacy` finalization checks pass.
 - Bare `npm install react-audio-native` can resolve the beta until stable exists; documentation must
   identify it as a prerelease and recommend `react-audio-native@next` during validation.
+
+## Follow-up actions
+
+- [x] Publish `react-audio-native@1.0.0-beta.1` with signed provenance.
+- [x] Complete clean Vite, Nuxt, React and Next registry-consumer verification.
+- [x] Delete the GitHub bootstrap secret and retire the temporary workflow.
+- [ ] Configure npm Trusted Publishing for `release.yml`.
+- [ ] Revoke the one-day bootstrap token on npm.
 
 ## References
 
