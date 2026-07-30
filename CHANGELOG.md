@@ -13,6 +13,8 @@ intent and generated package changelogs are managed by Changesets under `.change
   the authoritative prerelease channel.
 - Added a machine-enforced stable-release device gate and preserved the generated Silen Agent
   Contract inside the GitHub Pages artifact.
+- Retired the short-lived token bootstrap workflow after beta publication and clean
+  registry-consumer verification; permanent releases use OIDC only.
 
 ### Added
 
@@ -31,7 +33,8 @@ intent and generated package changelogs are managed by Changesets under `.change
 
 ### Release boundary
 
-- Source is prepared as `react-audio-native@1.0.0-beta.1`; no npm publication is claimed here.
+- `react-audio-native@1.0.0-beta.1` is published with signed provenance and available through
+  the documented `next` prerelease channel.
 - Stable `1.0.0` remains blocked until iOS WKWebView, Android WebView and HarmonyOS ArkWeb smoke
   evidence is complete.
 
