@@ -1,0 +1,32 @@
+---
+title: 浏览器与 WebView
+description: iOS、Android、HarmonyOS、PC 浏览器和嵌入式宿主的能力检测与降级策略。
+---
+
+# 浏览器与 WebView
+
+## 能力优先
+
+`detectAudioCapabilities()` 分别检测自定义控件前提、download、Media Session、原生 HLS、
+Pointer Events 和触摸能力。组件不根据 User-Agent 分支；缺少关键能力时退回
+`<audio controls>`。
+
+| 环境                       | 重点                                              |
+| -------------------------- | ------------------------------------------------- |
+| iOS Safari / WKWebView     | 用户手势、后台恢复、系统音频会话与路由切换        |
+| Android Chrome / WebView   | 生命周期、蓝牙路由、source fallback、宿主下载策略 |
+| HarmonyOS WebView / ArkWeb | 能力探针与显式注入的 Bridge，不绑定宿主方法名     |
+| PC 浏览器                  | 键盘、Pointer、Media Session 和格式支持逐项增强   |
+| 低于基线                   | 使用原生 controls；IE11 不支持                    |
+
+## Bridge 边界
+
+`AudioPlayerBridge` 只报告结构化状态、曲目和错误事件。React 包不会寻找全局宿主对象或
+假定 `postMessage` 形状。宿主负责把事件映射到 WKScriptMessageHandler、Android JS
+interface、ArkWeb bridge 或其他协议。
+
+从组件 prop 或 Hook options 中移除 `bridge` 会先解绑旧宿主，再处理同一次 render 中的
+source 变化；也可传 `null` 显式解绑，防止 WebView 回收后继续收到事件。
+
+浏览器自动化不能证明宿主后台、路由与音频会话行为。稳定版仍取决于
+[真机冒烟记录](../device-smoke/)。

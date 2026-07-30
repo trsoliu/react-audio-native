@@ -1,0 +1,49 @@
+---
+title: 公共 API
+description: React 组件、Headless Hook、命令 ref、回调和共享类型。
+---
+
+# 公共 API
+
+## 导出
+
+`react-audio-native` 导出：
+
+- `AudioPlayer`；
+- `useAudioPlayer()`；
+- `AudioPlayerHandle` 和组件 props/Hook result 类型；
+- `AudioTrack`、`AudioSnapshot`、`AudioPlayerError`、`AudioPlayerBridge` 等 core 类型；
+- 能力检测与媒体时间格式化工具。
+
+## 组件 props
+
+`src` 或非空 `tracks` 提供输入。其他核心 props 包括 `nativeControls`、`repeatMode`、
+`playbackRate`、`mediaSession`、`exclusive`、`group`、`autoplay`、音量、显示项和主题变量。
+
+回调为 `onReady`、`onPlay`、`onPause`、`onEnded`、`onTimeUpdate`、`onStateChange`、
+`onTrackChange` 和 `onError`。
+
+`bridge` 是可选且协议无关的宿主出口。移除它或传 `null` 会在 source 更新前断开旧宿主，
+后续状态、曲目和错误事件不会继续发送到已回收的 WebView。
+
+## Imperative ref
+
+```tsx
+import { useRef } from 'react'
+import { AudioPlayer, type AudioPlayerHandle } from 'react-audio-native'
+
+const playerRef = useRef<AudioPlayerHandle>(null)
+
+<AudioPlayer ref={playerRef} src="/episode.mp3" />
+```
+
+句柄提供播放、暂停、切换、停止、跳转、前后跳、选曲、上一首/下一首、音量、静音、倍速、
+循环模式和原生媒体元素访问。
+
+## Hook result
+
+`useAudioPlayer()` 返回 callback `audioRef`、不可变 `snapshot` 和稳定的 `controls`。控制器只
+在真实媒体元素交给 callback ref 后创建；StrictMode 清理后不会残留监听器。
+
+具体签名以 npm 包 `.d.ts` 为准。发布门禁通过 Are The Types Wrong、`publint` 和无 DOM 的
+Node ESM 导入来验证 ESM、CJS、类型与 SSR 边界。

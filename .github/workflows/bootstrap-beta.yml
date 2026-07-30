@@ -1,0 +1,84 @@
+name: Bootstrap npm beta
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type publish-beta.1 to publish the initial React prerelease'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: bootstrap-npm-beta
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: >-
+      github.repository == 'trsoliu/react-audio-native' &&
+      github.ref == 'refs/heads/main' &&
+      inputs.confirm == 'publish-beta.1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    environment: npm
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+      - run: npm install --global npm@12.0.1
+      - run: pnpm install --frozen-lockfile --registry=https://registry.npmjs.org
+      - name: Verify the published shared core
+        run: >-
+          npm view @trsoliu/audio-core@1.0.0-beta.1 version
+          --registry=https://registry.npmjs.org
+      - run: pnpm security:audit
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test:coverage
+      - run: pnpm build
+      - run: pnpm docs:build
+      - run: pnpm docs:index
+      - run: pnpm docs:audit
+      - run: pnpm docs:eval
+      - run: pnpm test:pack
+      - run: pnpm exec playwright install --with-deps chromium firefox webkit
+      - run: pnpm test:e2e
+      - name: Publish React beta when absent
+        working-directory: packages/react-audio-native
+        run: |
+          registry_url='https://registry.npmjs.org/react-audio-native/1.0.0-beta.1'
+          if curl --fail --silent --show-error --output /dev/null "$registry_url"; then
+            echo 'react-audio-native@1.0.0-beta.1 is already published; skipping.'
+          else
+            npm publish --tag next --access public --registry=https://registry.npmjs.org
+          fi
+          for attempt in {1..12}; do
+            if curl --fail --silent --show-error --output /dev/null "$registry_url"; then
+              echo 'react-audio-native@1.0.0-beta.1 is visible on the registry.'
+              break
+            fi
+            if [[ "$attempt" == 12 ]]; then
+              echo '::error::react-audio-native@1.0.0-beta.1 was not visible after 12 checks.'
+              exit 1
+            fi
+            sleep 5
+          done
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_BOOTSTRAP_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true
+      - name: Normalize prerelease dist-tags
+        run: |
+          npm dist-tag add react-audio-native@1.0.0-beta.1 next --registry=https://registry.npmjs.org
+          echo 'npm requires a latest tag while a package has no stable version; next remains the documented prerelease channel.'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_BOOTSTRAP_TOKEN }}
+      - name: Show published dist-tags
+        run: npm dist-tag ls react-audio-native --registry=https://registry.npmjs.org

@@ -1,0 +1,51 @@
+---
+title: Monorepo 项目地图
+description: React Audio Native 仓库的模块边界、依赖方向、验证证据和跨仓库关系。
+---
+
+# Monorepo 项目地图
+
+```text
+react-audio-native
+├── packages/react-audio-native # React 组件、Hook、ref、CSS
+├── apps/demo-react             # shadcn/ui 产品级演示
+├── apps/compatibility-lab      # 浏览器/WebView 能力与 Bridge 探针
+├── fixtures/vite-react         # React 18 Vite 类型与构建消费者
+├── fixtures/next               # React 19 Next SSR 消费者
+└── docs                        # Silen 文档、ADR、知识库、Agent Contract
+
+external: @trsoliu/audio-core   # 由 vue-audio-native 仓库发布
+```
+
+`docs` 是仓库内的内容根，但不是 pnpm workspace；Silen 安装在根开发依赖中，避免依赖目录
+被静态内容扫描。React package、Demo 与 fixtures 仍由 Turborepo workspace 管理。
+
+## 依赖方向
+
+| 来源          | 可以依赖                            | 不可以依赖                      |
+| ------------- | ----------------------------------- | ------------------------------- |
+| React package | `audio-core`、React、`lucide-react` | shadcn、Radix、Tailwind、Sonner |
+| Demo / Lab    | 发布包、shadcn/ui、Radix、Tailwind  | 未公开包内部路径                |
+| fixtures      | npm 风格公共入口                    | Monorepo 私有实现               |
+| docs          | 公共 API、ADR、验证证据             | 凭据、绝对本机路径、私有端点    |
+
+核心规则是 `audio-core → React adapter → UI/consumer`。Hook 和组件共享同一个 controller
+生命周期，不能各自维护播放真相。
+
+## 维护入口
+
+| 修改类型                | 首要文件                          | 必须补充的证据                        |
+| ----------------------- | --------------------------------- | ------------------------------------- |
+| controller 行为         | 上游 `audio-core`                 | 上游 core 单测与两个框架回归          |
+| Hook / StrictMode / SSR | `packages/react-audio-native/src` | React 单测、Node import、Next fixture |
+| 组件交互和 CSS          | package + Demo                    | 键盘、触摸、axe、pack 体积            |
+| WebView 支持            | Bridge/capability + lab           | 设备记录，不使用 UA 分支              |
+| 发布元数据              | package、Changeset、workflow      | registry core、pack、干净消费者       |
+| 文档/AI                 | `docs`、`AGENTS.md`               | Silen build、audit、eval              |
+
+## 跨仓库关系
+
+共享核心位于
+[trsoliu/vue-audio-native](https://github.com/trsoliu/vue-audio-native) 的
+`packages/audio-core`。开发期可以使用明确的本地 override；提交到 CI 与发布前必须移除，
+并从 npm registry 安装精确 core 版本。发布顺序始终是 core → Vue → React。

@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "topK": 5,
+  "cases": [
+    {
+      "id": "react-install",
+      "query": "React Vite 如何安装播放器并导入独立 CSS",
+      "lang": "zh-CN",
+      "expected": { "route": "/guide/getting-started/" }
+    },
+    {
+      "id": "next-ssr",
+      "query": "Next SSR import 为什么不会创建 DOM 或 Audio 对象",
+      "lang": "zh-CN",
+      "expected": { "route": "/guide/getting-started/" }
+    },
+    {
+      "id": "vue-react-map",
+      "query": "Vue statechange defineExpose slots 如何迁移到 React callback ref",
+      "lang": "zh-CN",
+      "expected": { "route": "/guide/vue-to-react/" }
+    },
+    {
+      "id": "workspace-boundary",
+      "query": "React package demo lab Vite Next 和外部 audio-core 的项目地图",
+      "lang": "zh-CN",
+      "expected": { "route": "/project-map/" }
+    },
+    {
+      "id": "harmony-bridge",
+      "query": "HarmonyOS ArkWeb WebView Bridge 如何保持协议无关",
+      "lang": "zh-CN",
+      "expected": { "route": "/wiki/browser-webview/" }
+    },
+    {
+      "id": "stable-device-gate",
+      "query": "React 稳定 1.0 发布前需要哪些 iOS Android 鸿蒙真机证据",
+      "lang": "zh-CN",
+      "expected": { "route": "/device-smoke/" }
+    },
+    {
+      "id": "read-only-mcp",
+      "query": "AI 客户端如何只读访问 React 项目的 Silen MCP 知识库",
+      "lang": "zh-CN",
+      "expected": { "route": "/wiki/ai-collaboration/" }
+    }
+  ]
+}

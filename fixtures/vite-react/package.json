@@ -1,0 +1,24 @@
+{
+  "name": "fixture-vite-react",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -b && vite build",
+    "lint": "eslint src vite.config.ts",
+    "typecheck": "tsc -b"
+  },
+  "dependencies": {
+    "react": "18.3.1",
+    "react-audio-native": "workspace:*",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "26.1.2",
+    "@types/react": "18.3.28",
+    "@types/react-dom": "18.3.7",
+    "@vitejs/plugin-react": "catalog:",
+    "typescript": "6.0.2",
+    "vite": "catalog:"
+  }
+}

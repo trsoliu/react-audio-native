@@ -1,0 +1,79 @@
+---
+title: 安装与快速开始
+description: 在 React、Vite 和 Next 中接入 React Audio Native 1.0。
+---
+
+# 安装与快速开始
+
+## 安装
+
+React 18.2 或 19 项目安装预发布版本：
+
+```bash
+pnpm add react-audio-native@next
+```
+
+播放器 CSS 是独立发布产物，不要求消费者配置 Tailwind：
+
+```tsx
+import { AudioPlayer, type AudioTrack } from 'react-audio-native'
+import 'react-audio-native/style.css'
+
+const tracks: readonly AudioTrack[] = [
+  {
+    id: 'episode-1',
+    title: 'Episode 1',
+    artist: 'Audio Native',
+    sources: [
+      { src: '/episode-1.ogg', type: 'audio/ogg' },
+      { src: '/episode-1.mp3', type: 'audio/mpeg' },
+    ],
+  },
+]
+
+export function Player() {
+  return (
+    <AudioPlayer
+      tracks={tracks}
+      repeatMode="all"
+      mediaSession
+      onStateChange={(snapshot) => console.log(snapshot.state)}
+    />
+  )
+}
+```
+
+## Headless Hook
+
+```tsx
+import { useAudioPlayer } from 'react-audio-native'
+
+export function HeadlessPlayer() {
+  const { audioRef, controls, snapshot } = useAudioPlayer({
+    src: '/episode-1.mp3',
+    group: 'podcast',
+    exclusive: true,
+  })
+
+  return (
+    <>
+      <audio ref={audioRef} />
+      <button type="button" onClick={() => void controls.toggle()}>
+        {snapshot.state === 'playing' ? 'Pause' : 'Play'}
+      </button>
+    </>
+  )
+}
+```
+
+## Next 与 SSR
+
+包的 ESM 入口保留 `'use client'`，导入阶段不会访问 DOM、创建 Audio 或注册全局监听器。
+在 Next App Router 中把播放器放入 Client Component；Next fixture 会在每次构建门禁中执行
+服务端打包和静态生成。
+
+## 下一步
+
+- 从 Vue 接入切换时阅读[Vue → React 迁移](./vue-to-react/)。
+- 完整 props、回调、Hook 和 ref 见[公共 API](../api/)。
+- WebView 宿主接入前阅读[浏览器与 WebView](../wiki/browser-webview/)。

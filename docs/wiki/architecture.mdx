@@ -1,0 +1,31 @@
+---
+title: React 与 core 架构
+description: callback ref、controller 生命周期、不可变快照、StrictMode 与 SSR 边界。
+---
+
+# React 与 core 架构
+
+## 数据流
+
+```text
+HTMLAudioElement callback ref
+        ↓ attach/detach
+@trsoliu/audio-core controller
+        ↓ immutable AudioSnapshot
+useAudioPlayer / AudioPlayer
+        ↓
+React render + callbacks + imperative ref
+```
+
+模块导入和服务端渲染不创建媒体对象。callback ref 收到真实 `HTMLAudioElement` 后才创建并
+挂载 controller；收到 `null` 时销毁订阅、事件、动画帧、互斥分组和 Media Session 所有权。
+这让 React 18/19 StrictMode 的挂载探测保持幂等。
+
+## 状态归属
+
+播放、暂停、列表、source 回退、缓冲、时间、循环、错误、互斥、Media Session 和 Bridge
+都属于 audio-core。React 层只负责 props/回调映射、外部 store 订阅、render props、DOM
+可访问性和 `forwardRef`。
+
+公开状态为 `idle`、`loading`、`ready`、`playing`、`paused`、`buffering`、`ended`、
+`error`。自动播放阻止是可恢复的 `AUTOPLAY_BLOCKED`，不是不可操作的终态。

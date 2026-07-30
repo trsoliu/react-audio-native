@@ -1,0 +1,9 @@
+.next
+.turbo
+coverage
+dist
+docs/.silen/ai
+node_modules
+playwright-report
+pnpm-lock.yaml
+test-results
