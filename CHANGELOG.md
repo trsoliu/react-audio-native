@@ -15,6 +15,8 @@ intent and generated package changelogs are managed by Changesets under `.change
   Contract inside the GitHub Pages artifact.
 - Retired the short-lived token bootstrap workflow after beta publication and clean
   registry-consumer verification; permanent releases use OIDC only.
+- Configured the npm Trusted Publisher for the exact `release.yml` workflow, protected `npm`
+  environment and publish-only permission.
 
 ### Added
 

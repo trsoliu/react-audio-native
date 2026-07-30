@@ -13,7 +13,9 @@ the stable release remains blocked by the device-smoke gate.
 
 ## Decision
 
-Use a one-day npm granular token only in the protected `npm` GitHub Environment. A manual workflow
+Use a bounded npm granular token only in the protected `npm` GitHub Environment. The operator
+selected a 90-day expiry ceiling on 2026-07-30, while the operational plan requires revocation as
+soon as the OIDC cutover is verified instead of relying on that expiry. A manual workflow
 on `main` requires the exact `publish-beta.1` confirmation, pins third-party Actions to immutable
 commits, installs core from the public registry, runs every release gate and publishes
 `react-audio-native@1.0.0-beta.1` with `next` and signed provenance. Exact-version checks and bounded
@@ -45,8 +47,8 @@ history retain the bootstrap audit trail.
 - [x] Publish `react-audio-native@1.0.0-beta.1` with signed provenance.
 - [x] Complete clean Vite, Nuxt, React and Next registry-consumer verification.
 - [x] Delete the GitHub bootstrap secret and retire the temporary workflow.
-- [ ] Configure npm Trusted Publishing for `release.yml`.
-- [ ] Revoke the one-day bootstrap token on npm.
+- [x] Configure npm Trusted Publishing for `release.yml`.
+- [ ] Revoke the bootstrap token on npm.
 
 ## References
 
