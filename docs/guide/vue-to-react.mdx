@@ -1,0 +1,24 @@
+---
+title: Vue → React 迁移
+description: 在保持 audio-core 状态语义的前提下，把 Vue 组件接入映射到 React。
+---
+
+# Vue → React 迁移
+
+两个框架使用相同的 `AudioTrack`、`AudioSnapshot`、`AudioPlayerError` 和
+`AudioPlayerHandle`。迁移主要发生在框架绑定层：
+
+| Vue                                   | React                                                            |
+| ------------------------------------- | ---------------------------------------------------------------- |
+| `<VueAudioNative :tracks="tracks" />` | `<AudioPlayer tracks={tracks} />`                                |
+| `@statechange`                        | `onStateChange`                                                  |
+| `@trackchange`                        | `onTrackChange`                                                  |
+| `defineExpose` 组件 ref               | `forwardRef<AudioPlayerHandle>`                                  |
+| `useAudioPlayer()` + Vue ref          | `useAudioPlayer()` + callback `audioRef`                         |
+| slots                                 | `artwork`、`tip`、`beforeControls`、`afterControls` render props |
+
+不要把 Vue 0.x 的连字符事件名直接复制到 JSX。React 不提供 Vue 旧事件别名；业务逻辑应
+迁移到类型化 callbacks。播放器行为、结构化错误和 WebView Bridge 事件保持一致。
+
+React 版不包含 React Native SDK。原生应用应在 WebView 中使用本包，或自行把共享 Bridge
+事件映射到宿主协议。

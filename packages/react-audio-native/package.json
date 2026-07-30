@@ -1,0 +1,101 @@
+{
+  "name": "react-audio-native",
+  "version": "1.0.0-beta.1",
+  "description": "Accessible React audio player for modern browsers and WebViews.",
+  "type": "module",
+  "license": "MIT",
+  "author": "trsoliu",
+  "homepage": "https://trsoliu.github.io/react-audio-native/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trsoliu/react-audio-native.git",
+    "directory": "packages/react-audio-native"
+  },
+  "bugs": {
+    "url": "https://github.com/trsoliu/react-audio-native/issues"
+  },
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./style.css": {
+      "types": "./dist/style.css.d.ts",
+      "default": "./dist/style.css"
+    }
+  },
+  "scripts": {
+    "build": "tsx scripts/build.ts",
+    "lint": "eslint src tests scripts vite.config.ts vitest.config.ts",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:pack": "publint && attw --pack . && size-limit && tsx scripts/check-pack.ts"
+  },
+  "dependencies": {
+    "@trsoliu/audio-core": "1.0.0-beta.1",
+    "lucide-react": "1.27.0"
+  },
+  "peerDependencies": {
+    "react": "^18.2 || ^19",
+    "react-dom": "^18.2 || ^19"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "0.18.5",
+    "@microsoft/api-extractor": "7.58.12",
+    "@size-limit/file": "13.0.2",
+    "@testing-library/dom": "10.4.1",
+    "@tailwindcss/vite": "4.3.3",
+    "@testing-library/react": "16.3.2",
+    "@testing-library/user-event": "14.6.1",
+    "@types/react": "18.3.28",
+    "@types/react-dom": "18.3.7",
+    "@vitejs/plugin-react": "6.0.4",
+    "@vitest/coverage-v8": "4.1.10",
+    "happy-dom": "20.11.1",
+    "publint": "0.3.22",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "size-limit": "13.0.2",
+    "tailwindcss": "4.3.3",
+    "tsx": "4.23.1",
+    "typescript": "6.0.2",
+    "vite": "8.1.5",
+    "vite-plugin-dts": "5.0.3",
+    "vitest": "4.1.10"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true,
+    "registry": "https://registry.npmjs.org/"
+  },
+  "size-limit": [
+    {
+      "path": "dist/index.js",
+      "limit": "25 KB"
+    },
+    {
+      "path": "dist/style.css",
+      "limit": "12 KB"
+    }
+  ]
+}

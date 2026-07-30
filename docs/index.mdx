@@ -1,0 +1,34 @@
+---
+layout: home
+title: React Audio Native
+description: React DOM audio player documentation, project map and AI-ready browser knowledge base.
+---
+
+## 这套文档解决什么问题
+
+React Audio Native 把 `@trsoliu/audio-core` 的浏览器媒体契约映射为 SSR 安全的 React
+组件、Headless Hook 和命令句柄。文档同时覆盖 WebView 能力、Bridge 边界、跨仓库发布
+顺序和真机证据。
+
+使用者从[快速开始](./guide/getting-started/)进入；维护者先看[项目地图](./project-map/)和
+[React 架构](./wiki/architecture/)；AI 客户端读取构建生成的
+`/.well-known/silen/manifest.json`，并保持只读直到用户明确授权写入。
+
+## 当前发布状态
+
+- 源码目标版本：`react-audio-native@1.0.0-beta.1`，精确依赖匹配的
+  `@trsoliu/audio-core` beta。
+- 包面向 React DOM 18.2/19、移动浏览器与 WebView，不包含 React Native 原生 SDK。
+- 稳定 `1.0.0` 仍由 iOS WKWebView、Android WebView 和 HarmonyOS ArkWeb 的
+  [真机冒烟记录](./device-smoke/)控制。
+
+## 快速索引
+
+| 目标                                | 文档                                        |
+| ----------------------------------- | ------------------------------------------- |
+| 安装并播放第一段音频                | [安装与快速开始](./guide/getting-started/)  |
+| 从 Vue API 切换到 React             | [Vue → React 迁移](./guide/vue-to-react/)   |
+| 查找组件、Hook、ref 和回调          | [公共 API](./api/)                          |
+| 理解 package、Demo、lab 与 fixtures | [Monorepo 项目地图](./project-map/)         |
+| 处理浏览器/WebView 差异             | [浏览器与 WebView](./wiki/browser-webview/) |
+| 准备 beta 或稳定发布                | [发布知识库](./release/)                    |
