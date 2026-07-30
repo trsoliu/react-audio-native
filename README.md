@@ -8,6 +8,15 @@ The component supports playlists, multi-format fallback, repeat modes, buffered 
 rate, Media Session, optional exclusive groups, structured errors and a protocol-neutral WebView
 Bridge. Importing it during SSR does not create DOM or media objects.
 
+## Install
+
+```bash
+pnpm add react-audio-native
+```
+
+Import `react-audio-native/style.css` once in the application. The stable package is available from
+[npm](https://www.npmjs.com/package/react-audio-native).
+
 ## Workspace
 
 ```text

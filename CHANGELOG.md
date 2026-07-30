@@ -5,6 +5,14 @@ intent and generated package changelogs are managed by Changesets under `.change
 
 ## Unreleased
 
+- No unreleased changes.
+
+## 1.0.0 - 2026-07-30
+
+- Published `react-audio-native@1.0.0` to npm through OIDC Trusted Publishing with SLSA provenance;
+  `latest` resolves to 1.0.0 and `next` remains on 1.0.0-beta.2.
+- Verified fresh Vite React and Next consumers against the registry artifacts, with the adapter
+  resolving exact `@trsoliu/audio-core@1.0.0`.
 - Accepted the maintainer's version-bound automated compatibility assessment for stable 1.0.0,
   while preserving unexecuted WebView rows as explicit residual risk instead of false evidence.
 - Replaced the device-only stable gate with an auditable dual-path gate: complete device evidence or
@@ -57,10 +65,10 @@ intent and generated package changelogs are managed by Changesets under `.change
 
 ### Release boundary
 
-- `react-audio-native@1.0.0-beta.1` is published with signed provenance and available through
-  the documented `next` prerelease channel.
-- Stable `1.0.0` is authorized by the recorded maintainer assessment and remains subject to the
-  complete automated, registry-consumer and OIDC publication gates.
+- Stable `react-audio-native@1.0.0` is published under `latest` with signed provenance; beta.2
+  remains available through the documented `next` prerelease channel.
+- The release used the recorded maintainer assessment and passed the complete automated,
+  registry-consumer and OIDC publication gates.
 
 ### Security
 

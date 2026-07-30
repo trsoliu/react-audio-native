@@ -19,10 +19,11 @@ release PR remains possible while either evidence path is incomplete.
 
 Stable publication is also bound to the generated version transition. The triggering push must
 remove a package changeset, advance the manifest to a stable version and contain only Changesets
-state, manifests, package changelogs and the lockfile. The workflow verifies the event's previous
-SHA is an ancestor and the requested release SHA is still the live `main` head, then repeats that
-remote-head check immediately before npm publication. Ordinary source or documentation pushes can
-update a release PR but cannot publish a stable package directly.
+state, manifests, package changelogs, the managed package README install section and the lockfile.
+The workflow verifies the event's previous SHA is an ancestor and the requested release SHA is still
+the live `main` head, then repeats that remote-head check immediately before npm publication.
+Ordinary source or documentation pushes can update a release PR but cannot publish a stable package
+directly.
 
 In pre mode, Changesets retains source changeset files. The workflow therefore publishes only
 after every non-empty changeset for the publishable package appears in the `pre.json` consumed
