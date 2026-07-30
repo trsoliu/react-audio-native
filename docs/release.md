@@ -1,19 +1,28 @@
 # Release policy
 
 1. Run `pnpm security:audit`, lint, typecheck, coverage, build, package and browser gates.
-2. Publish the exact `@trsoliu/audio-core` prerelease before the matching React prerelease; the
-   current published React beta consumes public `@trsoliu/audio-core@1.0.0-beta.2`.
+2. Publish the exact `@trsoliu/audio-core` version before the matching React version; stable
+   `react-audio-native@1.0.0` consumes public `@trsoliu/audio-core@1.0.0`.
 3. Install the registry tarballs in clean Vite and Next consumers; workspace links are not evidence.
-4. Publish React prereleases from Changesets `beta` pre mode with `--tag next` while any required
-   device smoke row is pending.
+4. Publish React prereleases from Changesets `beta` pre mode with `--tag next`.
 5. Merge a beta release PR after registry-core and automated gates pass; merge a stable release PR
-   only after all device evidence is attached.
+   only after the documented stable evidence path is complete.
 6. Stable releases use GitHub Actions Trusted Publishing with an npm environment, OIDC
    `id-token: write`, Node 24, npm 12 and provenance.
 
-The stable publish step is additionally guarded by `pnpm release:verify-devices`. It parses all four
-required rows in `docs/device-smoke.md` and stops unless every status is exactly `通过`; creating or
-updating a Changesets release PR remains possible while evidence is pending.
+The stable publish step is additionally guarded by `pnpm release:verify-stable`. It accepts either
+all four required rows marked exactly `通过`, or all rows retained with supported statuses plus a
+complete maintainer decision recording identity, ISO date, exact stable version coverage,
+successful automated assessment and explicit remaining-risk acceptance. It also checks every
+publishable manifest is stable and covered by that decision. Creating or updating a Changesets
+release PR remains possible while either evidence path is incomplete.
+
+Stable publication is also bound to the generated version transition. The triggering push must
+remove a package changeset, advance the manifest to a stable version and contain only Changesets
+state, manifests, package changelogs and the lockfile. The workflow verifies the event's previous
+SHA is an ancestor and the requested release SHA is still the live `main` head, then repeats that
+remote-head check immediately before npm publication. Ordinary source or documentation pushes can
+update a release PR but cannot publish a stable package directly.
 
 In pre mode, Changesets retains source changeset files. The workflow therefore publishes only
 after every non-empty changeset for the publishable package appears in the `pre.json` consumed
@@ -36,7 +45,7 @@ Because Changesets rejects a custom publish tag during active pre mode, a typed 
 the exact registry version and runs `npm publish --tag next --provenance` only when it is absent.
 An existing version is skipped only after bounded fresh/no-cache reads, including retries for
 transient registry failures, show `next` resolving to that exact version. Outside active pre mode,
-the stable path must pass `release:verify-devices`. Both
+the stable path must pass `release:verify-stable`. Both
 paths use Trusted Publishing, short-lived OIDC credentials and provenance; neither reads an npm
 token. The release job runs only on `main`; manual dispatch from the generated release branch
 cannot publish. Before invoking npm, the publisher also verifies that the package's exact
@@ -59,7 +68,7 @@ publishing.
 `publishConfig.registry` pins the destination to the official npm registry even when the machine
 uses an install mirror. `next` is the documented prerelease channel. npm requires a `latest` tag
 while a brand-new package has no stable version, so the first beta can temporarily be reachable
-through both tags; stable `1.0.0` will move `latest` to the stable version.
+through both tags; stable `1.0.0` moves `latest` to the stable version.
 
 `react-audio-native` now trusts `trsoliu/react-audio-native`'s `.github/workflows/release.yml`, the
 protected `npm` Environment and `npm publish` only. All later releases must use that OIDC binding.

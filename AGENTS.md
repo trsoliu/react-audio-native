@@ -82,7 +82,10 @@ SSR import safety, ESM/CJS/type correctness and no Demo dependency leakage.
 - `@trsoliu/audio-core` is published first from `trsoliu/vue-audio-native`.
 - A stable React version must never depend on a prerelease core range; `test:pack` enforces this.
 - Remove local workspace overrides and verify the registry core before CI or publication.
-- Prereleases use `next`; do not publish stable while `docs/device-smoke.md` has pending rows.
+- Prereleases use `next`; stable publication requires either complete device evidence or the
+  version-bound maintainer assessment recorded in `docs/device-smoke.md`.
+- Stable publication must remain bound to an allowlisted Changesets version transition and a live
+  default-branch head recheck; ordinary source commits cannot invoke npm publish.
 - Stable publishing uses GitHub Actions OIDC Trusted Publishing with provenance.
 - This project targets React DOM and WebViews, not React Native native SDKs.
 - Never commit npm auth, registry tokens, device recordings or local filesystem paths.

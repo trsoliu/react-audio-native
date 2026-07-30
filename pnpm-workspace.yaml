@@ -38,4 +38,4 @@ minimumReleaseAgeExclude:
   - '@size-limit/file@13.0.2'
   - size-limit@13.0.2
   - postcss@8.5.24
-  - '@trsoliu/audio-core@1.0.0-beta.1 || 1.0.0-beta.2'
+  - '@trsoliu/audio-core@1.0.0-beta.1 || 1.0.0-beta.2 || 1.0.0'

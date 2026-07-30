@@ -1,6 +1,6 @@
 # ADR 0002: Bootstrap the first npm beta with a protected short-lived token
 
-- Status: accepted; bootstrap completed; token retained until expiry
+- Status: accepted; bootstrap completed; stable gate superseded by ADR 0003; token retained until expiry
 - Date: 2026-07-30
 - Decider: trsoliu
 - Owner: trsoliu
@@ -8,8 +8,9 @@
 ## Context
 
 `react-audio-native` has no npm package record yet, so npm Trusted Publishing cannot be configured
-for its first publication. The shared `@trsoliu/audio-core@1.0.0-beta.1` must already be public, and
-the stable release remains blocked by the device-smoke gate.
+for its first publication. The shared `@trsoliu/audio-core@1.0.0-beta.1` must already be public. At
+the time of this bootstrap decision, stable publication was blocked by the device-only smoke gate;
+ADR 0003 later replaced it with the dual-path evidence gate.
 
 ## Decision
 
@@ -47,7 +48,7 @@ checks the exact registry version, verifies `next` through bounded fresh/no-cach
 tolerate transient registry failures before skipping, and invokes
 `npm publish --tag next --provenance` only when that version does not exist. The job is restricted
 to `main`, and React publication requires its exact core dependency to exist on npm. Outside active
-pre mode, the mutually exclusive stable branch still requires the device-smoke gate before
+pre mode, the mutually exclusive stable branch still requires the stable evidence gate before
 publication.
 
 If the original release run cannot be rerun, a manual dispatch on `main` requires the previous
@@ -72,7 +73,7 @@ already represented by the public beta manifest. The later `clear-react-api-docs
 - Bare `npm install react-audio-native` can resolve the beta until stable exists; documentation must
   identify it as a prerelease and recommend `react-audio-native@next` during validation.
 - The workflow cannot use prerelease state to bypass stable publication: pre mode is restricted to
-  `next`, while non-pre mode is restricted by the device gate.
+  `next`, while non-pre mode is restricted by the version-bound stable evidence gate.
 
 ## Follow-up actions
 
@@ -82,7 +83,7 @@ already represented by the public beta manifest. The later `clear-react-api-docs
 - [x] Delete the GitHub bootstrap secret and retire the temporary workflow.
 - [x] Configure npm Trusted Publishing for `release.yml`.
 - [x] Record the owner's decision to retain the disconnected token until 2026-10-28 and confirm it
-  is absent from the GitHub Environment and all release workflows.
+      is absent from the GitHub Environment and all release workflows.
 
 ## References
 

@@ -6,6 +6,10 @@ import { describe, expect, it } from 'vitest'
 const repositoryRoot = resolve(import.meta.dirname, '..')
 const workflowPath = resolve(repositoryRoot, '.github/workflows/release.yml')
 const packagePath = resolve(repositoryRoot, 'package.json')
+const versionPackagesPath = resolve(
+  repositoryRoot,
+  'scripts/version-packages.ts',
+)
 
 describe('stable npm release workflow', () => {
   it('runs only from the repository default branch', async () => {
@@ -16,17 +20,24 @@ describe('stable npm release workflow', () => {
     )
   })
 
-  it('runs the device gate after versioning and before publication', async () => {
+  it('runs the stable evidence gate after versioning and before publication', async () => {
     const workflow = await readFile(workflowPath, 'utf8')
     const changesets = workflow.indexOf('id: changesets')
-    const deviceGate = workflow.indexOf('pnpm release:verify-devices')
+    const stableGate = workflow.indexOf('pnpm release:verify-stable')
     const publish = workflow.indexOf('\n        run: pnpm release\n')
 
     expect(changesets).toBeGreaterThan(-1)
-    expect(deviceGate).toBeGreaterThan(changesets)
-    expect(publish).toBeGreaterThan(deviceGate)
+    expect(stableGate).toBeGreaterThan(changesets)
+    expect(publish).toBeGreaterThan(stableGate)
     expect(workflow).toContain(
       "if: steps.release_state.outputs.mode == 'stable' && steps.changesets.outputs.hasChangesets == 'false'",
+    )
+    expect(workflow).toContain(
+      "steps.release_state.outputs.release_commit == 'true'",
+    )
+    expect(workflow).toContain('id: stable_release_head_recheck')
+    expect(workflow).toContain(
+      "steps.stable_release_head_recheck.outputs.release_commit == 'true'",
     )
   })
 
@@ -36,7 +47,9 @@ describe('stable npm release workflow', () => {
     const changesets = workflow.indexOf('id: changesets')
     const prereleaseGate = workflow.indexOf('pnpm release:verify-prerelease')
     const releaseHeadRecheck = workflow.indexOf('id: release_head_recheck')
-    const prereleasePublish = workflow.indexOf('\n        run: pnpm release:next\n')
+    const prereleasePublish = workflow.indexOf(
+      '\n        run: pnpm release:next\n',
+    )
     const prereleaseCondition =
       "if: steps.release_state.outputs.mode == 'beta' && steps.release_state.outputs.prerelease_ready == 'true' && steps.release_state.outputs.release_commit == 'true'"
 
@@ -65,9 +78,9 @@ describe('stable npm release workflow', () => {
         line.includes("if: steps.release_state.outputs.mode == 'beta'"),
       )
     expect(betaConditions).toHaveLength(3)
-    expect(betaConditions.every((line) => !line.includes('hasChangesets'))).toBe(
-      true,
-    )
+    expect(
+      betaConditions.every((line) => !line.includes('hasChangesets')),
+    ).toBe(true)
 
     const packageJson = JSON.parse(await readFile(packagePath, 'utf8')) as {
       scripts?: Record<string, string>
@@ -87,6 +100,16 @@ describe('stable npm release workflow', () => {
     expect(packageJson.scripts?.['release:inspect']).toContain(
       'packages/react-audio-native/package.json',
     )
+    expect(packageJson.scripts?.['release:verify-stable']).toContain(
+      'scripts/stable-release-gate.ts',
+    )
+    expect(packageJson.scripts?.['release:verify-stable']).toContain(
+      'packages/react-audio-native/package.json',
+    )
+    expect(packageJson.scripts?.['version-packages']).toContain(
+      'scripts/version-packages.ts',
+    )
+    expect(packageJson.scripts?.['release:verify-devices']).toBeUndefined()
   })
 
   it('pins every release action to an immutable commit', async () => {
@@ -110,5 +133,12 @@ describe('stable npm release workflow', () => {
 
     expect(workflows.join('\n')).not.toContain('NPM_BOOTSTRAP_TOKEN')
     expect(await readFile(workflowPath, 'utf8')).toContain('id-token: write')
+  })
+
+  it('runs the custom version command without CommonJS-incompatible top-level await', async () => {
+    const script = await readFile(versionPackagesPath, 'utf8')
+
+    expect(script).toContain('void versionPackages().catch')
+    expect(script).not.toContain('  await versionPackages()')
   })
 })
