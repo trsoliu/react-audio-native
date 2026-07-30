@@ -58,8 +58,9 @@ the live remote comparison immediately before npm publication, preserving the so
 default-branch boundary even when another push races a running job.
 
 When pre mode was adopted, `react-audio-v1` was seeded as consumed because its contents were
-already represented by the public beta manifest. The later `clear-react-api-docs` changeset
-remains pending and is the sole input to the next version PR.
+already represented by the public beta manifest. The later `clear-react-api-docs` and
+`react-core-beta-two` changesets remain pending and are the inputs to the next version PR; the
+latter pins the now-public `@trsoliu/audio-core@1.0.0-beta.2` before React publication.
 
 ## Consequences
 
