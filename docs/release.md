@@ -18,8 +18,9 @@ authorization blocker.
 The initial beta was published by a protected manual workflow on `main` after an explicit
 confirmation and every release gate. A bounded granular token with a 2026-10-28 expiry ceiling was
 scoped to the protected `npm` GitHub Environment while GitHub OIDC supplied signed provenance. The
-expiry is a fallback, not the cleanup mechanism. After the registry and clean consumer checks
-passed, the temporary workflow and GitHub secret were removed.
+owner elected to retain the token until expiry after the registry and clean consumer checks passed;
+the temporary workflow and GitHub secret were removed, so it is disconnected from project
+publishing.
 
 `publishConfig.registry` pins the destination to the official npm registry even when the machine
 uses an install mirror. `next` is the documented prerelease channel. npm requires a `latest` tag
@@ -28,4 +29,5 @@ through both tags; stable `1.0.0` will move `latest` to the stable version.
 
 `react-audio-native` now trusts `trsoliu/react-audio-native`'s `.github/workflows/release.yml`, the
 protected `npm` Environment and `npm publish` only. All later releases must use that OIDC binding.
-The bootstrap token must be revoked on npm and must never be restored to GitHub.
+The retained bootstrap token must never be restored to GitHub, a workflow or local npm
+configuration and expires on 2026-10-28.
