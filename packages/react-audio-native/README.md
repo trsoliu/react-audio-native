@@ -13,11 +13,11 @@ exclusive groups, and a protocol-neutral WebView Bridge.
 <!-- release-install:start -->
 
 ```bash
-pnpm add react-audio-native@next
+pnpm add react-audio-native@1.0.0
 ```
 
-The 1.0 line is currently a prerelease. Import the standalone package CSS; consumers do not need
-Tailwind:
+Use `react-audio-native@next` only when intentionally validating a prerelease. Import the standalone
+package CSS; consumers do not need Tailwind:
 
 <!-- release-install:end -->
 
