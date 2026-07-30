@@ -15,6 +15,18 @@
       "expected": { "route": "/guide/getting-started/" }
     },
     {
+      "id": "react-callback-payloads",
+      "query": "React onReady onPlay buffering onTimeUpdate onTrackChange onError 在什么时候调用 payload 是什么",
+      "lang": "zh-CN",
+      "expected": { "route": "/api/" }
+    },
+    {
+      "id": "react-handle-before-ref",
+      "query": "React audioRef 挂载前调用 play toggle next 会返回什么错误",
+      "lang": "zh-CN",
+      "expected": { "route": "/api/" }
+    },
+    {
       "id": "vue-react-map",
       "query": "Vue statechange defineExpose slots 如何迁移到 React callback ref",
       "lang": "zh-CN",
